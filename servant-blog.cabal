@@ -6,12 +6,12 @@ cabal-version: 2.2
 
 name:           servant-blog
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/servant-blog#readme>
-homepage:       https://github.com/githubuser/servant-blog#readme
-bug-reports:    https://github.com/githubuser/servant-blog/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2024 Author name here
+description:    Please see the README on GitHub at <https://github.com/carlota-moh/servant-blog#readme>
+homepage:       https://github.com/carlota-moh/servant-blog#readme
+bug-reports:    https://github.com/carlota-moh/servant-blog/issues
+author:         Carlota Monedero
+maintainer:     carlota.monederoh@gmail.com
+copyright:      2024 Carlota Monedero
 license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
@@ -21,11 +21,13 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/servant-blog
+  location: https://github.com/carlota-moh/servant-blog
 
 library
   exposed-modules:
       Lib
+      LibExample
+      Utils
   other-modules:
       Paths_servant_blog
   autogen-modules:
@@ -36,7 +38,10 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , servant
     , servant-server
+    , text
+    , time
     , wai
     , warp
   default-language: Haskell2010
@@ -53,8 +58,11 @@ executable servant-blog-exe
   build-depends:
       aeson
     , base
+    , servant
     , servant-blog
     , servant-server
+    , text
+    , time
     , wai
     , warp
   default-language: Haskell2010
@@ -75,8 +83,11 @@ test-suite servant-blog-test
     , hspec
     , hspec-wai
     , hspec-wai-json
+    , servant
     , servant-blog
     , servant-server
+    , text
+    , time
     , wai
     , warp
   default-language: Haskell2010
