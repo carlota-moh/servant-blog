@@ -2,7 +2,7 @@ module Main
   ( main
   ) where
 
-import Lib ( startApp )
+import           Lib (startApp)
 
 main :: IO ()
 main = startApp

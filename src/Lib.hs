@@ -3,7 +3,9 @@
 {-# LANGUAGE TypeOperators #-}
 
 module Lib
-  ( startApp
+  ( User(..)
+  , myApi
+  , startApp
   , myApp
   ) where
 

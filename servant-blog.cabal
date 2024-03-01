@@ -27,6 +27,7 @@ library
   exposed-modules:
       Lib
       LibExample
+      Query
   other-modules:
       Paths_servant_blog
   autogen-modules:
@@ -37,7 +38,9 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , http-client
     , servant
+    , servant-client
     , servant-server
     , text
     , time
@@ -57,8 +60,10 @@ executable servant-blog-exe
   build-depends:
       aeson
     , base
+    , http-client
     , servant
     , servant-blog
+    , servant-client
     , servant-server
     , text
     , time
@@ -82,8 +87,10 @@ test-suite servant-blog-test
     , hspec
     , hspec-wai
     , hspec-wai-json
+    , http-client
     , servant
     , servant-blog
+    , servant-client
     , servant-server
     , text
     , time
