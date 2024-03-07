@@ -1,9 +1,9 @@
-{-# LANGUAGE DataKinds     #-}
+{-# LANGUAGE DataKinds #-}
 
-module Query where
+module Query () where
 
-import           Lib                      (User (..), myApi)
-import           Network.HTTP.Client      (defaultManagerSettings, newManager)
+import           Lib                 (User (..), myApi)
+import           Network.HTTP.Client (defaultManagerSettings, newManager)
 import           Servant.API
 import           Servant.Client
 

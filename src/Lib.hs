@@ -4,9 +4,8 @@
 
 module Lib
   ( User(..)
+  , myServer
   , myApi
-  , startApp
-  , myApp
   ) where
 
 import           Data.Aeson
@@ -28,13 +27,11 @@ instance ToJSON User where
 instance FromJSON User
 
 type UsersAPI
-  = "users" :> "list-all" :> Get '[ JSON] [User] :<|> "users" :> Capture
-      "usrId"
-      Int :> Get '[ JSON] User :<|> "createUser" :> ReqBody '[ JSON] User :> Post
-      '[ JSON]
-      User :<|> "deleteUser" :> Capture "usrId" Int :> Delete '[ JSON] [User] :<|> "updateUser" :> Capture
-      "usrId"
-      Int :> ReqBody '[ JSON] User :> Put '[ JSON] [User]
+  = "users" :> "list-all" :> Get '[ JSON] [User] 
+      :<|> "users" :> Capture "usrId" Int :> Get '[ JSON] User 
+      :<|> "createUser" :> ReqBody '[ JSON] User :> Post '[ JSON] User 
+      :<|> "deleteUser" :> Capture "usrId" Int :> Delete '[ JSON] [User] 
+      :<|> "updateUser" :> Capture "usrId" Int :> ReqBody '[ JSON] User :> Put '[ JSON] [User]
 
 myUsers :: [User]
 myUsers = [User 0 "charly" "1234", User 1 "gon" "5678"]
@@ -75,11 +72,3 @@ myServer = allUsers :<|> oneUser :<|> createUser :<|> deleteUser :<|> updateUser
 -- boilerplate
 myApi :: Proxy UsersAPI
 myApi = Proxy
-
-myApp :: Application
-myApp = serve myApi myServer
-
-startApp :: IO ()
-startApp = do
-  putStrLn "Running server on http://localhost:8080"
-  run 8080 myApp
