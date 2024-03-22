@@ -22,7 +22,12 @@ description:         Please see the README on GitHub at <https://github.com/carl
 dependencies:
 - base >= 4.7 && < 5
 - aeson
+- http-client
+- servant
+- servant-client
 - servant-server
+- text
+- time
 - wai
 - warp
 

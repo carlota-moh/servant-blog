@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
-import Lib (app)
+import Lib (myApp)
 import Test.Hspec
 import Test.Hspec.Wai
 
