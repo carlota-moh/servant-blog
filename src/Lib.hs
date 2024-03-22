@@ -8,7 +8,7 @@ module Lib
   , myApi
   ) where
 
-import           Data.Aeson
+import           Data.Aeson               as JSON
 import           Data.Foldable            (find)
 import           GHC.Generics
 import           Network.Wai
@@ -54,9 +54,9 @@ myServer = allUsers :<|> oneUser :<|> createUser :<|> deleteUser :<|> updateUser
   where
     allUsers = return myUsers
     oneUser :: Int -> Handler User
-    oneUser uid = do 
+    oneUser uid = do
       case getUserById uid of
-        Nothing -> throwError $ err404 { errBody = "User not found." }
+        Nothing -> throwError $ err404 {errBody = JSON.encode "User not found."}
         Just u  -> return u
     createUser :: User -> Handler User
     createUser = return

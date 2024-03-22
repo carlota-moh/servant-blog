@@ -1,0 +1,10 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:servant-blog"
+
+    - path: "app/Main.hs"
+      component: "servant-blog:exe:servant-blog-exe"
+
+    - path: "test"
+      component: "servant-blog:test:servant-blog-test"
