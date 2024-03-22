@@ -40,13 +40,6 @@ myUsers = [User 0 "charly" "1234", User 1 "gon" "5678"]
 getUserById :: Int -> Maybe User
 getUserById usrId = find (\user -> userId user == usrId) myUsers
 
--- TODO: Improve error handling
-checkUser :: Maybe User -> User
-checkUser mbUser =
-  case mbUser of
-    Nothing -> User (-1) "invalid" ""
-    Just u  -> u
-
 -- TODO: move to utils
 deleteUserFromList :: Int -> [User]
 deleteUserFromList uid = filter (\user -> userId user /= uid) myUsers
@@ -61,7 +54,10 @@ myServer = allUsers :<|> oneUser :<|> createUser :<|> deleteUser :<|> updateUser
   where
     allUsers = return myUsers
     oneUser :: Int -> Handler User
-    oneUser = return . checkUser . getUserById
+    oneUser uid = do 
+      case getUserById uid of
+        Nothing -> throwError $ err404 { errBody = "User not found." }
+        Just u  -> return u
     createUser :: User -> Handler User
     createUser = return
     deleteUser :: Int -> Handler [User]
