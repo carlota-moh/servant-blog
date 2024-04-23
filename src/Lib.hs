@@ -1,6 +1,6 @@
-{-# LANGUAGE DataKinds     #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE TypeOperators      #-}
 
 module Lib
   ( User(..)
@@ -10,21 +10,8 @@ module Lib
 
 import           Data.Aeson               as JSON
 import           Data.Foldable            (find)
-import           GHC.Generics
-import           Network.Wai
-import           Network.Wai.Handler.Warp
+import           Models                   (User (..))
 import           Servant
-
-data User = User
-  { userId       :: Int
-  , userName     :: String
-  , userPassword :: String
-  } deriving (Generic, Eq, Show)
-
-instance ToJSON User where
-  toEncoding = genericToEncoding defaultOptions
-
-instance FromJSON User
 
 type UsersAPI
   = "users" :> "list-all" :> Get '[ JSON] [User] 

@@ -25,7 +25,10 @@ source-repository head
 
 library
   exposed-modules:
+      Constants
+      Db
       Lib
+      Models
       Query
   other-modules:
       Paths_servant_blog
@@ -38,6 +41,7 @@ library
       aeson
     , base >=4.7 && <5
     , http-client
+    , postgresql-simple
     , servant
     , servant-client
     , servant-server
@@ -60,6 +64,7 @@ executable servant-blog-exe
       aeson
     , base
     , http-client
+    , postgresql-simple
     , servant
     , servant-blog
     , servant-client
@@ -87,6 +92,7 @@ test-suite servant-blog-test
     , hspec-wai
     , hspec-wai-json
     , http-client
+    , postgresql-simple
     , servant
     , servant-blog
     , servant-client
