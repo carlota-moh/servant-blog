@@ -1,4 +1,5 @@
 -- ref: https://github.com/Zelenya/elephants/blob/main/src/Hardcoded.hs
+{-# LANGUAGE OverloadedStrings #-}
 
 module Constants
   ( host
@@ -10,29 +11,28 @@ module Constants
   , connectionString
   ) where
 
-import           Data.String (fromString)
-import Data.Word (Word16)
+import           Data.String (IsString (fromString))
 
-host :: String
+host :: (IsString s) => s
 host = "0.0.0.0" -- "localhost"
 
-port :: String
+port :: (IsString s) => s
 port = "5435"
 
-portNumber :: Word16
+portNumber :: (Integral i) => i
 portNumber = 5435
 
-database :: String
+database :: (IsString s) => s
 database = "warehouse"
 
-user :: String
+user :: (IsString s) => s
 user = "postgres"
 
-password :: String
+password :: (IsString s) => s
 password = "password"
 
 -- "host=localhost port=5432 user=postgres dbname=warehouse password=password"
-connectionString :: String
+connectionString :: (IsString s) => s
 connectionString =
   stringify
     [ ("host", host)
