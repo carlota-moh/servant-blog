@@ -21,7 +21,7 @@ type UsersAPI
       :<|> "updateUser" :> Capture "usrId" Int :> ReqBody '[ JSON] User :> Put '[ JSON] [User]
 
 myUsers :: [User]
-myUsers = [User 0 "charly" "1234", User 1 "gon" "5678"]
+myUsers = [User 0 "charly" 25, User 1 "gon" 22]
 
 -- TODO: move to utils
 getUserById :: Int -> Maybe User
