@@ -9,9 +9,13 @@ module Constants
   , user
   , password
   , connectionString
+  , migrationDir
   ) where
 
 import           Data.String (IsString (fromString))
+
+migrationDir :: (IsString s) => s
+migrationDir = "./migrations"
 
 host :: (IsString s) => s
 host = "0.0.0.0" -- "localhost"

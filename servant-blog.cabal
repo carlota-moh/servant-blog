@@ -28,6 +28,7 @@ library
       Constants
       Db
       Lib
+      Migrations
       Models
       Query
   other-modules:
@@ -41,6 +42,7 @@ library
       aeson
     , base >=4.7 && <5
     , http-client
+    , postgresql-migration
     , postgresql-simple
     , servant
     , servant-client
@@ -64,6 +66,7 @@ executable servant-blog-exe
       aeson
     , base
     , http-client
+    , postgresql-migration
     , postgresql-simple
     , servant
     , servant-blog
@@ -92,6 +95,7 @@ test-suite servant-blog-test
     , hspec-wai
     , hspec-wai-json
     , http-client
+    , postgresql-migration
     , postgresql-simple
     , servant
     , servant-blog
