@@ -6,17 +6,38 @@ module Migrations
 
 import qualified Constants
 import           Database.PostgreSQL.Simple           (connectPostgreSQL)
-import           Database.PostgreSQL.Simple.Migration (MigrationCommand (MigrationDirectory),
+import           Database.PostgreSQL.Simple.Migration (MigrationCommand (..),
                                                        MigrationResult (..),
                                                        defaultOptions,
                                                        runMigration)
+import           Database.PostgreSQL.Simple.Util      (existsTable)
 
 runMig :: IO ()
 runMig = do
   con <- connectPostgreSQL Constants.connectionString
-  migrationRes <-
-    runMigration con defaultOptions (MigrationDirectory Constants.migrationDir)
-  case migrationRes of
-    MigrationError err ->
-      putStrLn $ "\nError performing migration: " ++ show err
-    MigrationSuccess -> putStrLn "\nMigration completed successfully"
+  isTableCreated <- existsTable con "schema_migrations"
+  
+  if not isTableCreated
+    then do
+      initDb con
+      runMigr con
+    else runMigr con
+
+  where
+    initDb con = do
+      initializeDbRes <- runMigration con defaultOptions MigrationInitialization
+      handleMigrationRes initializeDbRes
+
+    runMigr con = do
+      migrationResult <-
+        runMigration
+          con
+          defaultOptions
+          (MigrationDirectory Constants.migrationDir)
+      handleMigrationRes migrationResult
+
+    handleMigrationRes mr =
+      case mr of
+        MigrationError err ->
+          putStrLn $ "\nError performing migration: " ++ show err
+        MigrationSuccess -> putStrLn "\nMigration step completed successfully"
