@@ -21,9 +21,9 @@ queries :: ClientM ([User], User, User, [User], [User])
 queries = do
   allUsersRes <- queryAllUsers
   oneUserRes <- queryOneUser 1
-  createUserRes <- queryCreateUser (User 3 "user3" 34)
+  createUserRes <- queryCreateUser (User 3 "user3" $ Just 34)
   deleteUserRes <- queryDeleteUser 2
-  updateUserRes <- queryUpdateUser 1 (User 1 "gonzalo" 22)
+  updateUserRes <- queryUpdateUser 1 (User 1 "gonzalo" $ Just 22)
   return (allUsersRes, oneUserRes, createUserRes, deleteUserRes, updateUserRes)
 
 run :: IO ()

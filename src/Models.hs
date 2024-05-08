@@ -13,7 +13,7 @@ import           GHC.Generics
 data User = User
   { userId   :: Int
   , userName :: String
-  , userage  :: Int
+  , userage  :: Maybe Int
   } deriving (Generic, Eq, Show)
     deriving anyclass (ToRow, FromRow)
 
