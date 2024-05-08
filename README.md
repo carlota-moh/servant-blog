@@ -12,10 +12,24 @@ The database used is a PostgreSQL instance hosted in Docker and mapped to port 5
 docker compose up -d
 ```
 
+**NOTE**: Data will persist when running docker compose down. To empty the DB comment out the `volumes` lines on 
+the dockerfile before running `docker compose up`
+
 2. Access it:
 
 ```bash
 docker exec -it servant-blog-postgres-1 psql -U postgres -d warehouse
+```
+
+3. Query the database
+
+a. Open GHCi: `stack ghci`
+b. Load module with example queries: 
+
+```bash
+ghci> :l src/Query.hs
+ghci> runDb insertData
+ghci> runDb querydata
 ```
 
 # Using the project
@@ -26,18 +40,12 @@ docker exec -it servant-blog-postgres-1 psql -U postgres -d warehouse
 docker compose up --build -
 ```
 
-2. Initialize up server
+2. Initialize server
 
 ```bash
 stack build && stack run
 ```
 
-3. Query the server
+3. Query the APi
 
-a. Open GHCi: `stack ghci`
-b. Load module with example queries: 
-
-```bash
-ghci> :l src/Query.hs
-ghci> run
-```
+TBD
