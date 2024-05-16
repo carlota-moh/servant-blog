@@ -30,9 +30,9 @@ docker exec -it servant-blog-postgres-1 psql -U postgres -d warehouse
 ### 3.b. Load module with example queries: 
 
 ```bash
-ghci> :l src/Query.hs
+ghci> :l src/Db.hs
 ghci> runDb insertData
-ghci> runDb querydata
+ghci> runDb queryData
 ```
 
 # Using the project
