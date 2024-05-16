@@ -10,7 +10,18 @@ module Db
 
 import qualified Constants
 import           Data.Text                  (Text)
-import           Database.PostgreSQL.Simple
+import Database.PostgreSQL.Simple
+    ( Connection,
+      execute,
+      executeMany,
+      query,
+      query_,
+      defaultConnectInfo,
+      withConnect,
+      Only(Only),
+      ConnectInfo(connectPassword, connectHost, connectPort,
+                  connectDatabase, connectUser),
+      In(In) )
 import           Models                     (User (..))
 
 type ConnectionFunction = Connection -> IO ()

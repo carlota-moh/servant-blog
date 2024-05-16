@@ -28,7 +28,6 @@ library
       Constants
       Db
       Lib
-      Migrations
       Models
       Query
   other-modules:

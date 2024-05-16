@@ -2,6 +2,7 @@ databaseChangeLog:
    - changeSet:
        id: 1
        author: carlota.moh
+       comment: create-tables
        changes:
        - createTable:
            tableName: users
