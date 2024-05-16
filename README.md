@@ -4,7 +4,10 @@ This is a minimal servent written in Servant.
 
 # Database
 
-The database used is a PostgreSQL instance hosted in Docker and mapped to port 5435. To access it:
+The database system is composed of two services:
+
+- `postgres`: a PostgreSQL instance hosted in Docker and mapped to port 5435. 
+- `liquibase`: service for running migrations
 
 1. Set up the container:
 
@@ -37,7 +40,7 @@ ghci> runDb querydata
 1. Set up the database:
 
 ```bash
-docker compose up --build -
+docker compose up --build
 ```
 
 2. Initialize server
