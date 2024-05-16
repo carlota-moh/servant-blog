@@ -15,9 +15,4 @@ data User = User
   , userName :: String
   , userage  :: Maybe Int
   } deriving (Generic, Eq, Show)
-    deriving anyclass (ToRow, FromRow)
-
-instance ToJSON User where
-  toEncoding = genericToEncoding defaultOptions
-
-instance FromJSON User
+    deriving anyclass (ToRow, FromRow, ToJSON, FromJSON)
