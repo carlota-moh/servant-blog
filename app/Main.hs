@@ -2,17 +2,25 @@ module Main
   ( main
   ) where
 
-import           Lib                      (myApi, myServer)
+import           Data.Pool                  (Pool, defaultPoolConfig, newPool)
+import           Database.PostgreSQL.Simple (Connection, close, connect)
+import           Db                         (connectInfo)
+import           Lib                        (myApi, myServer)
 import           Network.Wai.Handler.Warp
 import           Servant
 
-myApp :: Application
-myApp = serve myApi myServer
+initConnectionPool :: IO (Pool Connection)
+initConnectionPool =
+  newPool $ defaultPoolConfig (connect connectInfo) close 1 10
+
+runApp :: Pool Connection -> IO ()
+runApp pool = run 8080 (serve myApi $ myServer pool)
 
 startApp :: IO ()
 startApp = do
+  pool <- initConnectionPool
   putStrLn "Running server on http://localhost:8080"
-  run 8080 myApp
+  runApp pool
 
 main :: IO ()
 main = startApp

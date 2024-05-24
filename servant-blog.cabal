@@ -43,6 +43,7 @@ library
     , http-client
     , postgresql-migration
     , postgresql-simple
+    , resource-pool
     , servant
     , servant-client
     , servant-server
@@ -67,6 +68,7 @@ executable servant-blog-exe
     , http-client
     , postgresql-migration
     , postgresql-simple
+    , resource-pool
     , servant
     , servant-blog
     , servant-client
@@ -96,6 +98,7 @@ test-suite servant-blog-test
     , http-client
     , postgresql-migration
     , postgresql-simple
+    , resource-pool
     , servant
     , servant-blog
     , servant-client

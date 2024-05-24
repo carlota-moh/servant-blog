@@ -6,6 +6,7 @@ module Db
   ( runDb
   , insertData
   , queryData
+  , connectInfo
   ) where
 
 import qualified Constants
@@ -26,17 +27,19 @@ import           Models                     (User (..))
 
 type ConnectionFunction = Connection -> IO ()
 
+connectInfo :: ConnectInfo
+connectInfo =
+  defaultConnectInfo
+    { connectHost = Constants.host
+    , connectPort = Constants.portNumber
+    , connectDatabase = Constants.database
+    , connectUser = Constants.user
+    , connectPassword = Constants.password
+    }
+
 runDb :: ConnectionFunction -> IO ()
 runDb fn = do
   putStrLn "\nRunning database"
-  let connectInfo =
-        defaultConnectInfo
-          { connectHost = Constants.host
-          , connectPort = Constants.portNumber
-          , connectDatabase = Constants.database
-          , connectUser = Constants.user
-          , connectPassword = Constants.password
-          }
   withConnect connectInfo fn
   putStrLn "Done!"
 

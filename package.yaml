@@ -25,6 +25,7 @@ dependencies:
 - http-client
 - postgresql-simple
 - postgresql-migration
+- resource-pool
 - servant
 - servant-client
 - servant-server
