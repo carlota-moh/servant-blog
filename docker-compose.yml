@@ -16,8 +16,6 @@ services:
       interval: 1s
       timeout: 1s
       retries: 5
-    volumes: 
-      - ./postgres-data:/var/lib/postgresql/data
 
   liquibase:
     depends_on: 
