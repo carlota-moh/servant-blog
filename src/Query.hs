@@ -1,6 +1,8 @@
 {-# LANGUAGE DataKinds #-}
 
-module Query () where
+module Query
+  (
+  ) where
 
 import           Lib                 (User (..), myApi)
 import           Network.HTTP.Client (defaultManagerSettings, newManager)
@@ -19,9 +21,9 @@ queries :: ClientM ([User], User, User, [User], [User])
 queries = do
   allUsersRes <- queryAllUsers
   oneUserRes <- queryOneUser 1
-  createUserRes <- queryCreateUser (User 3 "user3" "9901")
+  createUserRes <- queryCreateUser (User 3 "user3" $ Just 34)
   deleteUserRes <- queryDeleteUser 2
-  updateUserRes <- queryUpdateUser 1 (User 1 "gonzalo" "5678")
+  updateUserRes <- queryUpdateUser 1 (User 1 "gonzalo" $ Just 22)
   return (allUsersRes, oneUserRes, createUserRes, deleteUserRes, updateUserRes)
 
 run :: IO ()

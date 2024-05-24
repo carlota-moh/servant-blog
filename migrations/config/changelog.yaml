@@ -1,0 +1,23 @@
+databaseChangeLog:
+   - changeSet:
+       id: 1
+       author: carlota.moh
+       comment: create-tables
+       changes:
+       - createTable:
+           tableName: users
+           columns:
+           - column:
+               name: id
+               type: INT
+               constraints:
+                   primaryKey:  true
+                   nullable:  false
+           - column:
+               name: name
+               type: TEXT
+               constraints:
+                   nullable: false
+           - column:
+               name: age
+               type: INT

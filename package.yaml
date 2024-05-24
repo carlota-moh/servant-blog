@@ -23,6 +23,8 @@ dependencies:
 - base >= 4.7 && < 5
 - aeson
 - http-client
+- postgresql-simple
+- postgresql-migration
 - servant
 - servant-client
 - servant-server
