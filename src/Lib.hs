@@ -20,28 +20,37 @@ import           Servant
 
 type UsersAPI
   = "users" :> "list-all" :> Get '[ JSON] [User] 
-      :<|> "users" :> Capture "usrId" Int :> Get '[ JSON] [User] 
-      :<|> "createUser" :> ReqBody '[ JSON] User :> Post '[ JSON] () 
-      :<|> "deleteUser" :> Capture "usrId" Int :> Delete '[ JSON] () 
-      :<|> "updateUser" :> Capture "usrId" Int :> ReqBody '[ JSON] User :> Put '[ JSON] ()
+      :<|> "users" :> Capture "usrId" Int :> Get '[ JSON] (Maybe User) 
+      :<|> "createUser" :> ReqBody '[ JSON] User :> Post '[ JSON] NoContent 
+      :<|> "deleteUser" :> Capture "usrId" Int :> Delete '[ JSON] NoContent 
+      :<|> "updateUser" :> Capture "usrId" Int :> ReqBody '[ JSON] User :> Put '[ JSON] NoContent
 
--- TODO: Handle errors with Maybe
-getUserById :: Pool Connection -> Int -> IO [User]
+getUserById :: Pool Connection -> Int -> IO (Maybe User)
 getUserById conns uid =
-  withResource
-    conns
-    (\conn ->
-       query conn "select * from users where id = ?" (Only uid :: Only Int))
+  handleUserResponse
+    <$> withResource
+          conns
+          (\conn ->
+             query
+               conn
+               "select * from users where id = ?"
+               (Only uid :: Only Int))
+  where
+    handleUserResponse userResponse =
+      case userResponse of
+        []    -> Nothing
+        (x:_) -> Just x
 
--- TODO: not empty return type
-deleteUserById :: Pool Connection -> Int -> IO ()
-deleteUserById conns uid = do 
-  void $
+deleteUserById :: Pool Connection -> Int -> IO NoContent
+deleteUserById conns uid = do
+  _ <-
     withResource
       conns
-      (\conn -> execute conn "delete from users where id = ?" (Only uid :: Only Int))
+      (\conn ->
+         execute conn "delete from users where id = ?" (Only uid :: Only Int))
+  return NoContent
 
-createUserInDb :: Pool Connection -> User -> IO ()
+createUserInDb :: Pool Connection -> User -> IO NoContent
 createUserInDb conns newUser = do
   void
     $ withResource
@@ -51,15 +60,18 @@ createUserInDb conns newUser = do
              conn
              "insert into users (id, name, age) values (?, ?, ?)"
              newUser)
+  return NoContent
 
-updateUserById :: Pool Connection -> Int -> User -> IO ()
+updateUserById :: Pool Connection -> Int -> User -> IO NoContent
 updateUserById conns uid updatedUser = do
   targetUser <- getUserById conns uid
   case targetUser of
-    [] -> return ()
-    (x:xs) -> do
-      deleteUserById conns uid
-      createUserInDb conns updatedUser
+    -- Throw error here?
+    Nothing -> return NoContent
+    Just _ -> do
+      void $ deleteUserById conns uid
+      void $ createUserInDb conns updatedUser
+      return NoContent
 
 myServer :: Pool Connection -> Server UsersAPI
 myServer conns =
@@ -68,13 +80,13 @@ myServer conns =
     allUsers :: Handler [User]
     allUsers =
       liftIO $ withResource conns $ \conn -> query_ conn "SELECT * FROM users"
-    oneUser :: Int -> Handler [User]
+    oneUser :: Int -> Handler (Maybe User)
     oneUser uid = liftIO $ getUserById conns uid
-    createUser :: User -> Handler ()
+    createUser :: User -> Handler NoContent
     createUser user = liftIO $ createUserInDb conns user
-    deleteUser :: Int -> Handler ()
+    deleteUser :: Int -> Handler NoContent
     deleteUser uid = liftIO (deleteUserById conns uid)
-    updateUser :: Int -> User -> Handler ()
+    updateUser :: Int -> User -> Handler NoContent
     updateUser uid u = liftIO (updateUserById conns uid u)
 
 -- boilerplate
