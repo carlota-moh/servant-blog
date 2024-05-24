@@ -11,14 +11,14 @@ import           Servant.Client
 
 -- TODO: createUser should return [User] or User
 queryAllUsers :: ClientM [User]
-queryOneUser :: Int -> ClientM [User]
-queryCreateUser :: User -> ClientM ()
-queryDeleteUser :: Int -> ClientM ()
-queryUpdateUser :: Int -> User -> ClientM ()
+queryOneUser :: Int -> ClientM (Maybe User)
+queryCreateUser :: User -> ClientM NoContent
+queryDeleteUser :: Int -> ClientM NoContent
+queryUpdateUser :: Int -> User -> ClientM NoContent
 queryAllUsers :<|> queryOneUser :<|> queryCreateUser :<|> queryDeleteUser :<|> queryUpdateUser =
   client myApi
 
-queries :: ClientM ([User], [User], (), (), ())
+queries :: ClientM ([User], Maybe User, NoContent, NoContent, NoContent)
 queries = do
   allUsersRes <- queryAllUsers
   oneUserRes <- queryOneUser 1
@@ -27,9 +27,17 @@ queries = do
   updateUserRes <- queryUpdateUser 5 (User 5 "Gonzalo" $ Just 22)
   return (allUsersRes, oneUserRes, createUserRes, deleteUserRes, updateUserRes)
 
--- TODO: handle errors?
-runQueries :: IO ()
-runQueries = do
+runQuery :: (Show a) => ClientM a -> IO ()
+runQuery query = do
+  manager' <- newManager defaultManagerSettings
+  queryResult <-
+    runClientM query (mkClientEnv manager' (BaseUrl Http "localhost" 8080 ""))
+  case queryResult of
+    Left err -> putStrLn $ "Error: " ++ show err
+    Right result -> print result
+
+runAllQueries :: IO ()
+runAllQueries = do
   manager' <- newManager defaultManagerSettings
   queryResults <-
     runClientM queries (mkClientEnv manager' (BaseUrl Http "localhost" 8080 ""))
