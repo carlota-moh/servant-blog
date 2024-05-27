@@ -4,25 +4,16 @@
 
 module Db
   ( runDb
-  , insertData
-  , queryData
   , connectInfo
   ) where
 
 import qualified Constants
 import           Data.Text                  (Text)
-import Database.PostgreSQL.Simple
-    ( Connection,
-      execute,
-      executeMany,
-      query,
-      query_,
-      defaultConnectInfo,
-      withConnect,
-      Only(Only),
-      ConnectInfo(connectPassword, connectHost, connectPort,
-                  connectDatabase, connectUser),
-      In(In) )
+import           Database.PostgreSQL.Simple (ConnectInfo (connectDatabase, connectHost, connectPassword, connectPort, connectUser),
+                                             Connection, In (In), Only (Only),
+                                             defaultConnectInfo, execute,
+                                             executeMany, query, query_,
+                                             withConnect)
 import           Models                     (User (..))
 
 type ConnectionFunction = Connection -> IO ()
@@ -43,6 +34,7 @@ runDb fn = do
   withConnect connectInfo fn
   putStrLn "Done!"
 
+-- USAGE EXAMPLES
 insertData :: ConnectionFunction
 insertData connection = do
   -- insert single value using model

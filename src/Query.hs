@@ -18,15 +18,6 @@ queryUpdateUser :: Int -> User -> ClientM NoContent
 queryAllUsers :<|> queryOneUser :<|> queryCreateUser :<|> queryDeleteUser :<|> queryUpdateUser =
   client myApi
 
-queries :: ClientM ([User], Maybe User, NoContent, NoContent, NoContent)
-queries = do
-  allUsersRes <- queryAllUsers
-  oneUserRes <- queryOneUser 1
-  createUserRes <- queryCreateUser (User 5 "Gon" $ Just 23)
-  deleteUserRes <- queryDeleteUser 2
-  updateUserRes <- queryUpdateUser 5 (User 5 "Gonzalo" $ Just 22)
-  return (allUsersRes, oneUserRes, createUserRes, deleteUserRes, updateUserRes)
-
 runQuery :: (Show a) => ClientM a -> IO ()
 runQuery query = do
   manager' <- newManager defaultManagerSettings
@@ -35,6 +26,16 @@ runQuery query = do
   case queryResult of
     Left err -> putStrLn $ "Error: " ++ show err
     Right result -> print result
+
+-- USAGE EXAMPLES
+queries :: ClientM ([User], Maybe User, NoContent, NoContent, NoContent)
+queries = do
+  allUsersRes <- queryAllUsers
+  oneUserRes <- queryOneUser 1
+  createUserRes <- queryCreateUser (User 5 "Gon" $ Just 23)
+  deleteUserRes <- queryDeleteUser 2
+  updateUserRes <- queryUpdateUser 5 (User 5 "Gonzalo" $ Just 22)
+  return (allUsersRes, oneUserRes, createUserRes, deleteUserRes, updateUserRes)
 
 runAllQueries :: IO ()
 runAllQueries = do
