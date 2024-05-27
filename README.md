@@ -40,8 +40,11 @@ ghci> runDb queryData
 ## 1. Set up the database:
 
 ```bash
-docker compose up --build
+docker compose up --build -d
 ```
+
+**NOTE**: Data will persist when running docker compose down. To empty the DB comment out the `volumes` lines on 
+the dockerfile before running `docker compose up`
 
 ## 2. Initialize server
 
@@ -49,6 +52,31 @@ docker compose up --build
 stack build && stack run
 ```
 
-## 3. Query the APi
+## 3. Query the API
 
-TBD
+You can either query the database directly using `curl` or by using some of the example queries provided in `src/Query.hs`
+
+### Using curl
+
+```bash
+curl --request GET http://localhost:8080/users/list-all 
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"userId":1,"userName":"Charly"}' \
+  http://localhost:8080/createUser
+```
+
+### Using query functions
+
+1. Open GHCi: `stack ghci`
+2. Load module with example queries: 
+
+```bash
+ghci> :l src/Query.hs
+ghci> runQuery queryAllUsers
+ghci> runQuery queryOneUser 1
+ghci> runQuery queryCreateUser (User 5 "TMA1" $ Just 9999)
+ghci> runQuery queryDeleteUser 5
+ghci> runQuery queryUpdateUser 5 (User 5 "TMA2" $ Just 9998)
+```
