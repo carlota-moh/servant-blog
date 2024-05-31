@@ -11,7 +11,7 @@ import           Servant.Client
 
 -- TODO: createUser should return [User] or User
 queryAllUsers :: ClientM [User]
-queryOneUser :: Int -> ClientM (Maybe User)
+queryOneUser :: Int -> ClientM User
 queryCreateUser :: User -> ClientM NoContent
 queryDeleteUser :: Int -> ClientM NoContent
 queryUpdateUser :: Int -> User -> ClientM NoContent
@@ -28,7 +28,7 @@ runQuery query = do
     Right result -> print result
 
 -- USAGE EXAMPLES
-queries :: ClientM ([User], Maybe User, NoContent, NoContent, NoContent)
+queries :: ClientM ([User], User, NoContent, NoContent, NoContent)
 queries = do
   allUsersRes <- queryAllUsers
   oneUserRes <- queryOneUser 1
