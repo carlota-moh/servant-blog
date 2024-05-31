@@ -76,7 +76,7 @@ curl --header "Content-Type: application/json" \
 ghci> :l src/Query.hs
 ghci> runQuery queryAllUsers
 ghci> runQuery queryOneUser 1
-ghci> runQuery queryCreateUser (User 5 "TMA1" $ Just 9999)
-ghci> runQuery queryDeleteUser 5
-ghci> runQuery queryUpdateUser 5 (User 5 "TMA2" $ Just 9998)
+ghci> runQuery queryUpsertUser (User 5 "TMA1" $ Just 9999)
+ghci> runQuery queryDeleteUser 1
+ghci> runQuery queryUpsertUser (User 5 "TMA2" $ Just 9998)
 ```
