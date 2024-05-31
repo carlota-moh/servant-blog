@@ -21,9 +21,8 @@ import           Servant
 type UsersAPI
   = "users" :> "list-all" :> Get '[ JSON] [User] 
       :<|> "users" :> Capture "usrId" Int :> Get '[ JSON] User 
-      :<|> "createUser" :> ReqBody '[ JSON] User :> Post '[ JSON] NoContent 
       :<|> "deleteUser" :> Capture "usrId" Int :> Delete '[ JSON] NoContent 
-      :<|> "updateUser" :> Capture "usrId" Int :> ReqBody '[ JSON] User :> Put '[ JSON] NoContent
+      :<|> "upsetUser" :> ReqBody '[ JSON] User :> Put '[ JSON] NoContent
 
 getUserById :: Pool Connection -> Int -> IO (Maybe User)
 getUserById conns uid =
@@ -41,7 +40,6 @@ getUserById conns uid =
         []    -> Nothing
         (x:_) -> Just x
 
--- TODO: Where to handle success operation?
 deleteUserById :: Pool Connection -> Int -> IO NoContent
 deleteUserById conns uid = do
   _ <-
@@ -63,15 +61,15 @@ createUserInDb conns newUser = do
              newUser)
   return NoContent
 
-updateUserById :: Pool Connection -> Int -> User -> IO NoContent
-updateUserById conns uid updatedUser = do
-  void $ deleteUserById conns uid
-  void $ createUserInDb conns updatedUser
+updateUserInDb :: Pool Connection -> User -> IO NoContent
+updateUserInDb conns userData = do
+  void $ deleteUserById conns (userId userData)
+  void $ createUserInDb conns userData
   return NoContent
 
 myServer :: Pool Connection -> Server UsersAPI
 myServer conns =
-  allUsers :<|> oneUser :<|> createUser :<|> deleteUser :<|> updateUser
+  allUsers :<|> oneUser :<|> deleteUser :<|> upsertUser
   where
     allUsers :: Handler [User]
     allUsers =
@@ -82,25 +80,18 @@ myServer conns =
       case userResponse of
         Nothing -> throwError $ err404 {errBody = "User not found."}
         Just u  -> return u
-    createUser :: User -> Handler NoContent
-    createUser user = do
-      userResponse <- liftIO $ getUserById conns (userId user)
-      case userResponse of
-        Nothing -> liftIO $ createUserInDb conns user
-        Just _ ->
-          throwError $ err409 {errBody = "User is already created in database!"}
     deleteUser :: Int -> Handler NoContent
     deleteUser uid = do
       userResponse <- liftIO $ getUserById conns uid
       case userResponse of
         Nothing -> throwError $ err404 {errBody = "User not found."}
         Just _  -> liftIO $ deleteUserById conns uid
-    updateUser :: Int -> User -> Handler NoContent
-    updateUser uid updatedUser = do
-      userResponse <- liftIO $ getUserById conns uid
+    upsertUser :: User -> Handler NoContent
+    upsertUser userData = do
+      userResponse <- liftIO $ getUserById conns (userId userData)
       case userResponse of
-        Nothing -> throwError $ err404 {errBody = "User not found."}
-        Just _  -> liftIO $ updateUserById conns uid updatedUser
+        Nothing -> liftIO $ createUserInDb conns userData
+        Just _  -> liftIO $ updateUserInDb conns userData
 
 -- boilerplate
 myApi :: Proxy UsersAPI

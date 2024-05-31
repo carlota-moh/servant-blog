@@ -9,13 +9,11 @@ import           Network.HTTP.Client (defaultManagerSettings, newManager)
 import           Servant.API
 import           Servant.Client
 
--- TODO: createUser should return [User] or User
 queryAllUsers :: ClientM [User]
 queryOneUser :: Int -> ClientM User
-queryCreateUser :: User -> ClientM NoContent
 queryDeleteUser :: Int -> ClientM NoContent
-queryUpdateUser :: Int -> User -> ClientM NoContent
-queryAllUsers :<|> queryOneUser :<|> queryCreateUser :<|> queryDeleteUser :<|> queryUpdateUser =
+queryUpsertUser :: User -> ClientM NoContent
+queryAllUsers :<|> queryOneUser :<|> queryDeleteUser :<|> queryUpsertUser =
   client myApi
 
 runQuery :: (Show a) => ClientM a -> IO ()
@@ -32,9 +30,9 @@ queries :: ClientM ([User], User, NoContent, NoContent, NoContent)
 queries = do
   allUsersRes <- queryAllUsers
   oneUserRes <- queryOneUser 1
-  createUserRes <- queryCreateUser (User 5 "Gon" $ Just 23)
+  createUserRes <- queryUpsertUser (User 5 "Gon" $ Just 23)
   deleteUserRes <- queryDeleteUser 2
-  updateUserRes <- queryUpdateUser 5 (User 5 "Gonzalo" $ Just 22)
+  updateUserRes <- queryUpsertUser (User 5 "Gonzalo" $ Just 22)
   return (allUsersRes, oneUserRes, createUserRes, deleteUserRes, updateUserRes)
 
 runAllQueries :: IO ()
