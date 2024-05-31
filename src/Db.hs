@@ -1,6 +1,7 @@
 -- ref: https://github.com/Zelenya/elephants/blob/main/src/Elephants/PostgresqlSimple.hs
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications    #-}
 
 module Db
   ( runDb
@@ -59,10 +60,10 @@ queryData connection = do
   putStrLn $ "Query 1: " <> show query1
   -- query using where
   query2 :: [User] <-
-    query connection "select * from users where age = ?" (Only 23 :: Only Int)
+    query connection "select * from users where age = ?" (Only @Int 23)
   putStrLn $ "Query 2: " <> show query2
   -- query with where + in
   query3 :: [User] <-
     query connection "select * from users where name in ?"
-      $ Only (In ["Charly" :: Text, "Gon"])
+      $ Only (In @[Text] ["Charly", "Gon"])
   putStrLn $ "Query 3: " <> show query3
