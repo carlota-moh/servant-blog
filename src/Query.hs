@@ -11,23 +11,32 @@ import           Servant.Client
 
 queryAllUsers :: ClientM [User]
 queryOneUser :: Int -> ClientM User
-queryCreateUser :: User -> ClientM User
-queryDeleteUser :: Int -> ClientM [User]
-queryUpdateUser :: Int -> User -> ClientM [User]
-queryAllUsers :<|> queryOneUser :<|> queryCreateUser :<|> queryDeleteUser :<|> queryUpdateUser =
+queryDeleteUser :: Int -> ClientM NoContent
+queryUpsertUser :: User -> ClientM NoContent
+queryAllUsers :<|> queryOneUser :<|> queryDeleteUser :<|> queryUpsertUser =
   client myApi
 
-queries :: ClientM ([User], User, User, [User], [User])
+runQuery :: (Show a) => ClientM a -> IO ()
+runQuery query = do
+  manager' <- newManager defaultManagerSettings
+  queryResult <-
+    runClientM query (mkClientEnv manager' (BaseUrl Http "localhost" 8080 ""))
+  case queryResult of
+    Left err -> putStrLn $ "Error: " ++ show err
+    Right result -> print result
+
+-- USAGE EXAMPLES
+queries :: ClientM ([User], User, NoContent, NoContent, NoContent)
 queries = do
   allUsersRes <- queryAllUsers
   oneUserRes <- queryOneUser 1
-  createUserRes <- queryCreateUser (User 3 "user3" $ Just 34)
+  createUserRes <- queryUpsertUser (User 5 "Gon" $ Just 23)
   deleteUserRes <- queryDeleteUser 2
-  updateUserRes <- queryUpdateUser 1 (User 1 "gonzalo" $ Just 22)
+  updateUserRes <- queryUpsertUser (User 5 "Gonzalo" $ Just 22)
   return (allUsersRes, oneUserRes, createUserRes, deleteUserRes, updateUserRes)
 
-run :: IO ()
-run = do
+runAllQueries :: IO ()
+runAllQueries = do
   manager' <- newManager defaultManagerSettings
   queryResults <-
     runClientM queries (mkClientEnv manager' (BaseUrl Http "localhost" 8080 ""))
